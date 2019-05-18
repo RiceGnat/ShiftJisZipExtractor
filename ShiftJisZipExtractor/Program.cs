@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
+using System.Text;
 
-namespace ShiftJisZipList
+namespace ShiftJisZipEncoder
 {
 	class Program
 	{
@@ -22,19 +21,16 @@ namespace ShiftJisZipList
 			string zipPath = Path.GetFullPath(path);
 			string extractPath = Path.GetFullPath(output);
 
-			ZipFilenameReader zip = new ZipFilenameReader(zipPath);
-			IEnumerable<string> filenames = zip.GetAllFilenames();
-
 			// Ensures that the last character on the extraction path is the directory separator char
 			if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
 				extractPath += Path.DirectorySeparatorChar;
 
-			using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+			using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Read, Encoding.GetEncoding("shift_jis")))
 			{
-				IEnumerable<string> files = archive.Entries.Zip(filenames, (entry, filename) =>
+				foreach (ZipArchiveEntry entry in archive.Entries)
 				{
 					// Get full path
-					string destinationPath = Path.GetFullPath(Path.Combine(extractPath, filename));
+					string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
 
 					// Check that path is safe
 					if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
@@ -46,14 +42,9 @@ namespace ShiftJisZipList
 						if (Path.GetFileName(destinationPath) != String.Empty)
 						{
 							entry.ExtractToFile(destinationPath);
+							Console.WriteLine(destinationPath);
 						}
 					}
-
-					return destinationPath;
-				});
-				foreach (string file in files)
-				{
-					Console.WriteLine(file);
 				}
 			}
 		}

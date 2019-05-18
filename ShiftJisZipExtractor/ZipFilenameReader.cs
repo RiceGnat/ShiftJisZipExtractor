@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ShiftJisZipList
+namespace ShiftJisZipEncoder
 {
+	// This class is no longer needed since I discovered ZipFile had encoding options,
+	// but I'm leaving it here for reference
 	public class ZipFilenameReader
 	{
-		
 		private const int FILE_HEADER_SIGNATURE = 0x04034b50; // Reversed for endianness
 		private const int FILE_NAME_LEN_OFFSET = 0x001a;
 		private const int EXTRA_FIELD_LEN_OFFSET = 0x001c;
