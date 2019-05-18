@@ -10,7 +10,16 @@ namespace ShiftJisZipEncoder
 		static void Main(string[] args)
 		{
 			string path = args[0];
-			string output = args[1];
+			string output;
+
+			try
+			{
+				output = args[1];
+			}
+			catch
+			{
+				output = ".";
+			}
 
 			Extract(path, output);
 		}
