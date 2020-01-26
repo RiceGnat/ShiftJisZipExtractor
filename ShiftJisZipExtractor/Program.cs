@@ -9,19 +9,26 @@ namespace ShiftJisZipEncoder
 	{
 		static void Main(string[] args)
 		{
-			string path = args[0];
+			int offset = 0;
 			string output;
 
-			try
-			{
+			if (args[0].ToLowerInvariant() == "-o") {
 				output = args[1];
+				offset += 2;
 			}
-			catch
+			else
 			{
 				output = ".";
 			}
 
-			Extract(path, output);
+			int i = offset;
+
+			while (i < args.Length)
+			{
+				string path = args[i];
+				Extract(path, output);
+				i++;
+			}
 		}
 
 		private static void Extract(string path, string output)
@@ -29,6 +36,9 @@ namespace ShiftJisZipEncoder
 			// Get full paths
 			string zipPath = Path.GetFullPath(path);
 			string extractPath = Path.GetFullPath(output);
+
+			string zipName = Path.GetFileNameWithoutExtension(path);
+			extractPath = Path.Combine(extractPath, zipName);
 
 			// Ensures that the last character on the extraction path is the directory separator char
 			if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
